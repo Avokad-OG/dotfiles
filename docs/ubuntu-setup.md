@@ -6,19 +6,19 @@ Setup walkthrough for apt-based systems, written against a headless server
 ## Quick start
 
 ```bash
-git clone <repo-url> ~/omarchy-config
-~/omarchy-config/install.sh          # auto-detects the OS, runs install-ubuntu.sh
+git clone <repo-url> ~/dotfiles
+~/dotfiles/install.sh          # auto-detects the OS, runs install-ubuntu.sh
 ```
 
 Or run the Ubuntu installer directly:
 
 ```bash
-~/omarchy-config/install-ubuntu.sh
+~/dotfiles/install-ubuntu.sh
 ```
 
 The script is **idempotent** — safe to run repeatedly. It never overwrites
-anything: an existing symlink to the repo is left alone, and a file that
-already exists (symlink to elsewhere or a real file) is reported and skipped.
+anything: an existing symlink to the repo is left alone, and a file that already
+exists (symlink to elsewhere or a real file) is reported and skipped.
 
 ## What it does
 
@@ -29,88 +29,62 @@ already exists (symlink to elsewhere or a real file) is reported and skipped.
 3. **unzip** — installed via apt only when absent (Mason needs it to extract
    .zip-based packages such as stylua and lemminx).
 4. **python3-venv** — installed via apt (Mason's Python-based tools, e.g.
-   xmlformatter, need `ensurepip` to create their virtualenvs; on
-   Debian/Ubuntu that lives in the `python3-venv` package).
-5. **Symlinks** (user-level only, no `/etc`, no sudo when the packages exist):
-   - `.markdownlint-cli2.jsonc` → `~/.markdownlint-cli2.jsonc`
-   - `.prettierrc.json` → `~/.prettierrc.json`
+   xmlformatter, need `ensurepip` to create their virtualenvs; on Debian/Ubuntu
+   that lives in the `python3-venv` package).
+5. **.NET 10 and Roslyn** — the SDK is installed from Microsoft to `~/.dotnet`
+   when missing, followed by the per-user global `roslyn-language-server` tool
+   in `~/.dotnet/tools`. These provide C# support and the SDK used by csharpier.
+6. **Plugin hosts** — TPM is installed by the script, plus the **first nvim
+   launch** bootstraps lazy.nvim, installs all Neovim plugins, and Mason
+   installs the tools listed in `lua/plugins/mason.lua` (`ensure_installed`).
+   unzip (step 3) is installed upfront so those installs can extract .zip
+   packages.
+7. **Symlinks** (user-level only, no `/etc`, no sudo once the packages exist):
    - `.config/nvim` → `~/.config/nvim`
    - `.config/tmux` → `~/.config/tmux`
    - `.config/starship.toml` → `~/.config/starship.toml` (linked before the
-     Starship setup in step 7 so the new prompt already has a style)
-5. **.NET 10 and Roslyn** — the SDK is installed from Microsoft to
-   `~/.dotnet` when missing, followed by the per-user global
-   `roslyn-language-server` tool in `~/.dotnet/tools`. These provide C# support
-   and the SDK used by csharpier.
-6. **Plugin setup** — TPM is installed by the script, but the configured tmux
-   plugins still need a one-time `prefix + I` inside tmux. The **first nvim
-   launch** bootstraps lazy.nvim, installs all Neovim plugins, and Mason
-   installs the tools listed in `lua/plugins/mason.lua` (`ensure_installed`).
-   unzip is installed upfront (step 3) so those installs can extract .zip
-   packages.
-7. **Starship prompt** — Ubuntu keeps bash as the login shell, and
-   Powerlevel10k requires zsh, so the p10k-style prompt here is **Starship**
-   (macOS keeps zsh + Powerlevel10k via `setup-p10k-macos.sh`).
-   `setup-starship-ubuntu.sh` downloads the official release binary into
-   `~/.local/bin` (glibc build on x86_64, musl on aarch64) when missing and
-   appends `eval "$(starship init bash)"` to `~/.bashrc`, so the prompt shows
-   in every new bash session — no shell switch needed. The prompt style is
-   tracked in this repo at `.config/starship.toml` and symlinked to
-   `~/.config/starship.toml` (step 5), so edit the repo file and commit to
-   change it. To start over from a preset instead, overwrite the repo file:
+     Starship setup in step 8 so the new prompt already has a style)
+   - `.markdownlint-cli2.jsonc` → `~/.markdownlint-cli2.jsonc`
+   - `.prettierrc.json` → `~/.prettierrc.json`
+8. **Starship prompt** — Ubuntu keeps bash as the login shell, and Powerlevel10k
+   requires zsh, so the p10k-style prompt here is **Starship** (macOS keeps
+   zsh + Powerlevel10k via `setup-p10k-macos.sh`). `setup-starship-ubuntu.sh`
+   downloads the official release binary into `~/.local/bin` (glibc build on
+   x86_64, musl on aarch64) when missing and appends
+   `eval "$(starship init bash)"` to `~/.bashrc`, so the prompt shows in every
+   new bash session — no shell switch needed. The prompt style is tracked in
+   this repo at `.config/starship.toml` (symlinked in step 7), so edit the repo
+   file and commit to change it. To start over from a preset instead, overwrite
+   the repo file:
 
    ```bash
-   cd ~/omarchy-config   # or wherever this repo is cloned
+   cd ~/dotfiles   # or wherever this repo is cloned
    starship preset pastel-powerline -o .config/starship.toml
    # then open a new shell; the change is tracked once committed
    ```
 
-   Client-side, the same Meslo LG Nerd Font requirement applies to the
-   prompt's icons.
+   Import the prompt icons client-side too — see the Nerd Font note below.
 
 Unlike the Arch installer, this script does **not** install keyd or link
-Hyprland configs — those are desktop/keyboard-only and not useful on a
-headless server.
+Hyprland configs — those are desktop/keyboard-only and not useful on a headless
+server.
 
-## Client-side requirements
+## After first install
 
-- **Nerd Font** — LazyVim renders icons; install a Nerd Font in the terminal
-  you SSH from (e.g. Meslo LG Nerd Font, same as macOS), otherwise icons show
-  as boxes.
-- **OSC 52 clipboard** — with no display server, nvim's clipboard falls back
-  to OSC 52. Inside tmux this works in most modern terminals; without tmux it
-  depends on terminal support.
-
-## Markdown tooling
-
-- `markdownlint-cli2` is configured with `--config ~/.markdownlint-cli2.jsonc`
-  (linting.lua passes it explicitly, since markdownlint-cli2 only
-  auto-discovers config in its CWD).
-- `prettierd` formats markdown using `~/.prettierrc.json` (proseWrap,
-  printWidth 80).
-
-## Obsidian (optional)
-
-`obsidian.lua` ships with no workspaces configured. If you use Obsidian,
-uncomment the `workspaces` block and point it at your own vault (any
-directory containing an `.obsidian` folder).
-
-## Notes
-
-- **C# / .NET** — the installer installs the .NET 10 SDK via Microsoft's
-  official installer at `~/.dotnet` and the `roslyn-language-server` global
-  tool at `~/.dotnet/tools`. `csharp.lua` and `options.lua` use them for C# LSP
-  support and csharpier.
-- **keyd / hypr** — not installed or linked by this script (headless server).
+- **tmux plugins** — with TPM installed, press `prefix + I` once inside tmux to
+  load the configured plugins (after reloading the config — shared controls are
+  in [Usage](usage.md)).
+- **Mason tools** — the first interactive nvim launch finishes installing the
+  Mason tool list; check `:Mason` afterwards.
 
 ## Tools on PATH (~/.bashrc)
 
 The installer appends PATH exports for the .NET SDK (`~/.dotnet` and
 `~/.dotnet/tools`, so `dotnet` and `roslyn-language-server` are reachable),
-luacheck (`~/.luarocks/bin`) and nvim
-(`/opt/nvim-linux-x86_64/bin`) to `~/.bashrc`. These apply to interactive
-shells only; scripts and non-interactive SSH sessions won't see them. If you
-need the tools in scripts, add the same exports to `~/.profile`:
+luacheck (`~/.luarocks/bin`) and nvim (`/opt/nvim-linux-x86_64/bin`) to
+`~/.bashrc`. These apply to interactive shells only; scripts and non-interactive
+SSH sessions won't see them. If you need the tools in scripts, add the same
+exports to `~/.profile`:
 
 ```bash
 export PATH="/opt/nvim-linux-x86_64/bin:$PATH"

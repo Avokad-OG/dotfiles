@@ -51,9 +51,7 @@ main() {
   echo "(linked into ~/.config/starship.toml) - edit the repo file to change it."
 }
 
-# Enable the Starship prompt in ~/.bashrc. setup-starship-ubuntu.sh downloads
-# the official binary into ~/.local/bin when missing and appends the init line
-# idempotently.
+# Enable the Starship prompt in ~/.bashrc by invoking the setup script.
 setup_starship() {
   local setup="$DOTFILES_DIR/setup-starship-ubuntu.sh"
 

@@ -4,13 +4,13 @@
 Trixie/aarch64:
 
 ```bash
-~/omarchy-config/install.sh
+~/dotfiles/install.sh
 ```
 
 You can also run the installer directly:
 
 ```bash
-~/omarchy-config/install-pi.sh
+~/dotfiles/install-pi.sh
 ```
 
 ## What it does
@@ -27,3 +27,8 @@ The installer is idempotent: existing files and unrelated symlinks are never
 overwritten. TPM is cloned once to `~/.config/tmux/plugins/tpm`; after the
 first run, reload tmux and press the tmux prefix followed by `Shift-I` to
 install the configured plugins.
+
+## After install
+
+First-run steps (Neovim/Mason bootstrap, tmux TPM controls) and installer
+override knobs are shared — see **[Usage](usage.md)**.
