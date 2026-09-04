@@ -17,7 +17,7 @@ fi
 main() {
   prepare_sudo
   install_apt_packages \
-    build-essential curl git gh unzip fontconfig xz-utils luarocks \
+    build-essential curl git gh unzip lazygit fontconfig xz-utils luarocks \
     "liblua${LUA_VERSION}-dev" nodejs npm python3-venv tmux
   install_dotnet
   install_roslyn_language_server
@@ -28,6 +28,10 @@ main() {
   install_tmux
 
   link_common_dotfiles
+  # Starship is the Ubuntu prompt; link its tracked config before
+  # setup_starship runs so the fresh prompt already has a style.
+  link "$DOTFILES_DIR/.config/starship.toml" \
+    "$HOME/.config/starship.toml"
   install_tpm
 
   upgrade_apt_packages
@@ -43,7 +47,8 @@ main() {
   echo "the Mason tools listed in nvim's mason.lua config."
   echo "Client-side: use a Nerd Font in your terminal for LazyVim icons."
   echo "Starship is configured as the bash prompt in ~/.bashrc; it shows in"
-  echo "new shells. Pick a style once with e.g.: starship preset pastel-powerline"
+  echo "new shells. Its style comes from the tracked .config/starship.toml"
+  echo "(linked into ~/.config/starship.toml) - edit the repo file to change it."
 }
 
 # Enable the Starship prompt in ~/.bashrc. setup-starship-ubuntu.sh downloads

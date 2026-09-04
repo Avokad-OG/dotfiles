@@ -162,6 +162,10 @@ main() {
     "$HOME/.config/hypr"
   link "$DOTFILES_DIR/.config/kitty" \
     "$HOME/.config/kitty"
+  # Starship is enabled by Omarchy's own bash init, so the prompt config
+  # follows the same repo-symlink scheme as the other user configs.
+  link "$DOTFILES_DIR/.config/starship.toml" \
+    "$HOME/.config/starship.toml"
   install_tpm
   install_luacheck
 

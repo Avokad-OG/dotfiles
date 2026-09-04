@@ -1,16 +1,17 @@
 # dotfiles
 
-Neovim (LazyVim), tmux, kitty, Hyprland and keyd configuration.
+Neovim (LazyVim), tmux, kitty, Hyprland, Starship and keyd configuration.
 
 ## Layout
 
 ```text
 .markdownlint-cli2.jsonc -> ~/.markdownlint-cli2.jsonc (markdown lint config)
 .config/
-├── nvim/    -> ~/.config/nvim   (LazyVim-based config)
-├── tmux/    -> ~/.config/tmux   (tmux.conf)
-└── hypr/    -> ~/.config/hypr   (Hyprland: keybindings, monitors, input, …)
-└── kitty/   -> ~/.config/kitty  (kitty terminal, macOS)
+├── nvim/           -> ~/.config/nvim         (LazyVim-based config)
+├── tmux/           -> ~/.config/tmux         (tmux.conf)
+├── hypr/           -> ~/.config/hypr         (Hyprland: keybindings, monitors, …)
+├── kitty/          -> ~/.config/kitty        (kitty terminal, macOS)
+└── starship.toml   -> ~/.config/starship.toml (Starship prompt; Ubuntu + Omarchy)
 etc/
 └── keyd/
     └── default.conf -> /etc/keyd/default.conf  (keyd key remapping, root-owned)

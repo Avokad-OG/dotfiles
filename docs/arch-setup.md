@@ -19,6 +19,8 @@ You can also run the installer directly:
   roslyn-language-server tool) are installed via mise.
 - Links the shared dotfiles and the Hyprland configuration.
 - Links the kitty configuration.
+- Links the Starship prompt config (`starship.toml`; Omarchy's bash init
+  enables Starship, so the tracked style applies here too).
 - Installs `keyd` through `omarchy pkg add`.
 - Enables and reloads the `keyd` service.
 - Installs TPM and luacheck if they are missing.

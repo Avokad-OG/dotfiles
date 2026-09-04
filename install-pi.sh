@@ -36,7 +36,7 @@ main() {
 
   prepare_sudo
   install_apt_packages \
-    build-essential curl git gh unzip fontconfig xz-utils luarocks \
+    build-essential curl git gh unzip lazygit fontconfig xz-utils luarocks \
     "liblua${LUA_VERSION}-dev" nodejs npm python3-venv tmux
   install_dotnet
   install_roslyn_language_server

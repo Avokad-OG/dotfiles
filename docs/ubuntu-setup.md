@@ -36,6 +36,8 @@ already exists (symlink to elsewhere or a real file) is reported and skipped.
    - `.prettierrc.json` → `~/.prettierrc.json`
    - `.config/nvim` → `~/.config/nvim`
    - `.config/tmux` → `~/.config/tmux`
+   - `.config/starship.toml` → `~/.config/starship.toml` (linked before the
+     Starship setup in step 7 so the new prompt already has a style)
 5. **.NET 10 and Roslyn** — the SDK is installed from Microsoft to
    `~/.dotnet` when missing, followed by the per-user global
    `roslyn-language-server` tool in `~/.dotnet/tools`. These provide C# support
@@ -52,11 +54,15 @@ already exists (symlink to elsewhere or a real file) is reported and skipped.
    `setup-starship-ubuntu.sh` downloads the official release binary into
    `~/.local/bin` (glibc build on x86_64, musl on aarch64) when missing and
    appends `eval "$(starship init bash)"` to `~/.bashrc`, so the prompt shows
-   in every new bash session — no shell switch needed. Pick a style once with:
+   in every new bash session — no shell switch needed. The prompt style is
+   tracked in this repo at `.config/starship.toml` and symlinked to
+   `~/.config/starship.toml` (step 5), so edit the repo file and commit to
+   change it. To start over from a preset instead, overwrite the repo file:
 
    ```bash
-   starship preset pastel-powerline -o ~/.config/starship.toml
-   # then open a new shell; tweak ~/.config/starship.toml anytime
+   cd ~/omarchy-config   # or wherever this repo is cloned
+   starship preset pastel-powerline -o .config/starship.toml
+   # then open a new shell; the change is tracked once committed
    ```
 
    Client-side, the same Meslo LG Nerd Font requirement applies to the
