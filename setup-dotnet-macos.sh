@@ -22,10 +22,13 @@ fi
 echo "Found .NET SDK at $DOTNET_DIR/dotnet: $("$DOTNET_DIR/dotnet" --version)"
 
 # --- Lines to add to ~/.zshrc ---------------------------------------------------
+# Global .NET tools (e.g. roslyn-language-server, installed by install-macos.sh)
+# live in ~/.dotnet/tools, so both the SDK dir and the tools dir go on PATH.
 readonly BLOCK=(
   '# .NET SDK (dotnet-install.sh) -- added by setup-dotnet.sh'
   "export DOTNET_ROOT=\"$DOTNET_DIR\""
   "export PATH=\"\$PATH:$DOTNET_DIR\""
+  "export PATH=\"\$PATH:$HOME/.dotnet/tools\""
 )
 
 if [[ ! -f "$ZSHRC" ]]; then
@@ -44,7 +47,8 @@ done
 if (( added )); then
   echo "Added .NET configuration to $ZSHRC"
 else
-  echo "$ZSHRC already configured for .NET; no changes made"
+  echo ".NET already configured in $ZSHRC; skipping."
+  exit 0
 fi
 
 # --- Verify dotnet is on PATH in a fresh interactive zsh --------------------------
@@ -56,6 +60,6 @@ else
 fi
 
 echo
-echo "Done! Next steps:"
+echo "Done! dotnet is configured for new zsh sessions."
 echo "  1. Open a new terminal window (or run: source $ZSHRC)"
 echo "  2. Try: dotnet --version"

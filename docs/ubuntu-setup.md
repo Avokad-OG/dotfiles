@@ -1,7 +1,7 @@
 # Ubuntu / Debian Setup (install-ubuntu.sh)
 
 Setup walkthrough for apt-based systems, written against a headless server
-accessed over SSH/tmux.
+(Ubuntu 24.04) accessed over SSH/tmux.
 
 ## Quick start
 
@@ -68,6 +68,12 @@ headless server.
 - `prettierd` formats markdown using `~/.prettierrc.json` (proseWrap,
   printWidth 80).
 
+## Obsidian (optional)
+
+`obsidian.lua` ships with no workspaces configured. If you use Obsidian,
+uncomment the `workspaces` block and point it at your own vault (any
+directory containing an `.obsidian` folder).
+
 ## Notes
 
 - **C# / .NET** — the installer installs the .NET 10 SDK via Microsoft's
@@ -76,12 +82,14 @@ headless server.
   support and csharpier.
 - **keyd / hypr** — not installed or linked by this script (headless server).
 
-## nvim on PATH
+## Tools on PATH (~/.bashrc)
 
-nvim at `/opt/nvim-linux-x86_64/bin` is added to PATH only
-in interactive shells (`~/.bashrc`). Scripts and non-interactive SSH sessions
-won't find it. If you need nvim in scripts, add the same export to
-`~/.profile`:
+The installer appends PATH exports for the .NET SDK (`~/.dotnet` and
+`~/.dotnet/tools`, so `dotnet` and `roslyn-language-server` are reachable),
+luacheck (`~/.luarocks/bin`) and nvim
+(`/opt/nvim-linux-x86_64/bin`) to `~/.bashrc`. These apply to interactive
+shells only; scripts and non-interactive SSH sessions won't see them. If you
+need the tools in scripts, add the same exports to `~/.profile`:
 
 ```bash
 export PATH="/opt/nvim-linux-x86_64/bin:$PATH"

@@ -139,14 +139,37 @@ cpu_architecture() {
   esac
 }
 
-# Debian/Ubuntu helpers. Update package metadata once, then install all
-# requested packages in a single apt invocation.
+# Debian/Ubuntu helpers. Apt itself is idempotent, but to avoid re-running
+# apt-get update/install on repeat runs, only attempt the packages that are
+# actually missing and skip upgrades when none are pending.
 install_apt_packages() {
+  local pkg
+  local -a to_install
+
+  for pkg in "$@"; do
+    if dpkg-query -W -f='${db:Status-Abbrev}' "$pkg" 2>/dev/null | grep -q '^ii'; then
+      echo "ok:     $pkg already installed"
+    else
+      to_install+=("$pkg")
+    fi
+  done
+
+  if (( ${#to_install[@]} == 0 )); then
+    echo "All apt packages already installed; skipping apt install."
+    return 0
+  fi
+
+  echo "Installing apt packages: ${to_install[*]}"
   run_quietly "${SUDO[@]}" apt-get update
-  run_quietly "${SUDO[@]}" apt-get install -y "$@"
+  run_quietly "${SUDO[@]}" apt-get install -y "${to_install[@]}"
 }
 
 upgrade_apt_packages() {
+  if ! apt-get -s upgrade 2>&1 | grep -q '^Inst'; then
+    echo "No apt upgrades available; skipping upgrade."
+    return 0
+  fi
+  echo "Upgrading apt packages..."
   run_quietly "${SUDO[@]}" apt-get upgrade -y
 }
 
@@ -262,6 +285,47 @@ install_tmux() {
   fi
 
   echo "tmux:   installed ($(command -v tmux))"
+}
+
+# Add the per-user PATH exports the Linux installers produce to ~/.bashrc:
+#   - the .NET SDK (installed with --no-path to $DOTNET_DIR) and its global
+#     tools directory (roslyn-language-server lives in ~/.dotnet/tools)
+#   - luacheck, installed with `luarocks --local` to $LUA_ROCKS_BIN
+#   - the Neovim release tarball at $NEOVIM_INSTALL_ROOT/nvim-linux-$CPU_ARCHITECTURE/bin
+# Idempotent: each missing line is appended once; existing lines are preserved.
+setup_bashrc() {
+  local bashrc="$HOME/.bashrc"
+  local nvim_bin="${NEOVIM_INSTALL_ROOT}/nvim-linux-${CPU_ARCHITECTURE}/bin"
+  local line
+  local added=0
+  local -a lines
+
+  lines=(
+    '# dotfiles installer: .NET SDK, luacheck, nvim PATH'
+    "export DOTNET_ROOT=\"$DOTNET_DIR\""
+    "export PATH=\"\$PATH:$DOTNET_DIR\""
+    "export PATH=\"\$PATH:$HOME/.dotnet/tools\""
+    "export PATH=\"\$PATH:$LUA_ROCKS_BIN\""
+    "export PATH=\"\$PATH:$nvim_bin\""
+  )
+
+  if [[ ! -f "$bashrc" ]]; then
+    : >"$bashrc"
+    echo "Created $bashrc (did not exist)"
+  fi
+
+  for line in "${lines[@]}"; do
+    if ! grep -qxF -- "$line" "$bashrc"; then
+      printf '%s\n' "$line" >>"$bashrc"
+      added=1
+    fi
+  done
+
+  if ((added)); then
+    echo "Added PATH exports to $bashrc"
+  else
+    echo "$bashrc already configured; no changes made"
+  fi
 }
 
 install_npm() {

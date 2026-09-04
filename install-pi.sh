@@ -35,7 +35,6 @@ main() {
   fi
 
   prepare_sudo
-  echo "Updating and upgrading apt-get..."
   install_apt_packages \
     build-essential curl git gh unzip fontconfig xz-utils luarocks \
     "liblua${LUA_VERSION}-dev" nodejs npm python3-venv tmux
@@ -52,12 +51,13 @@ main() {
 
   upgrade_apt_packages
 
+  setup_bashrc
+
   echo
-  printf '%s\n' \
-    "Run: echo 'export PATH=\"${NEOVIM_INSTALL_ROOT}/nvim-linux-${CPU_ARCHITECTURE}/bin:\$PATH\"' >> ~/.bashrc" \
-    "Then: source ~/.bashrc"
-  echo
-  echo "Done. First nvim launch bootstraps lazy.nvim and installs"
+  echo "Done. PATH exports for the .NET SDK, luacheck and nvim were added"
+  echo "to ~/.bashrc. Open a new shell (or run: source ~/.bashrc) before using"
+  echo "dotnet, roslyn-language-server, luacheck or nvim from the terminal."
+  echo "First nvim launch bootstraps lazy.nvim and installs"
   echo "the Mason tools listed in nvim's mason.lua config."
 }
 

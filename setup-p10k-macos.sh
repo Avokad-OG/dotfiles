@@ -11,6 +11,13 @@
 set -euo pipefail
 
 ZSHRC="${ZDOTDIR:-$HOME}/.zshrc"
+echo "Enabling Powerlevel10k for zsh: $ZSHRC"
+
+if [[ "${SHELL##*/}" != "zsh" ]]; then
+  echo "Warning: your login shell is ${SHELL##*/}, not zsh." >&2
+  echo "         This configures $ZSHRC, which only zsh reads, so the" >&2
+  echo "         prompt will not change until you switch: chsh -s /bin/zsh" >&2
+fi
 
 # --- Locate the Homebrew prefix ----------------------------------------------
 find_brew_prefix() {
@@ -79,7 +86,14 @@ done
 if ((added)); then
   echo "Added powerlevel10k configuration to $ZSHRC"
 else
-  echo "$ZSHRC already configured for powerlevel10k; no changes made"
+  p10k_cfg="${P10K_CONFIG_FILE:-${ZDOTDIR:-$HOME}/.p10k.zsh}"
+  if [[ -f "$p10k_cfg" ]]; then
+    echo "Powerlevel10k already configured; skipping."
+    exit 0
+  fi
+  echo "Powerlevel10k already enabled in $ZSHRC; open a new terminal and run:"
+  echo "  p10k configure"
+  exit 0
 fi
 
 # --- Verify p10k loads in an interactive zsh -----------------------------------
@@ -91,7 +105,13 @@ else
 fi
 
 echo
-echo "Done! Next steps:"
-echo "  1. Open a new terminal window (or run: source $ZSHRC)"
-echo "  2. Run: p10k configure"
-echo "     This starts the interactive wizard (font checks, style, colors)."
+p10k_cfg="${P10K_CONFIG_FILE:-${ZDOTDIR:-$HOME}/.p10k.zsh}"
+echo "Done! p10k is configured for new zsh sessions."
+echo "  * The CURRENT terminal has no p10k loaded yet - open a new terminal"
+echo "    window (or run: source $ZSHRC)."
+if [[ -f "$p10k_cfg" ]]; then
+  echo "  * Prompt style config found ($p10k_cfg); the new prompt is ready."
+else
+  echo "  * No prompt style config yet: run  p10k configure  in a new"
+  echo "    terminal to pick a style (writes $p10k_cfg)."
+fi
