@@ -46,6 +46,21 @@ already exists (symlink to elsewhere or a real file) is reported and skipped.
    installs the tools listed in `lua/plugins/mason.lua` (`ensure_installed`).
    unzip is installed upfront (step 3) so those installs can extract .zip
    packages.
+7. **Starship prompt** — Ubuntu keeps bash as the login shell, and
+   Powerlevel10k requires zsh, so the p10k-style prompt here is **Starship**
+   (macOS keeps zsh + Powerlevel10k via `setup-p10k-macos.sh`).
+   `setup-starship-ubuntu.sh` downloads the official release binary into
+   `~/.local/bin` (glibc build on x86_64, musl on aarch64) when missing and
+   appends `eval "$(starship init bash)"` to `~/.bashrc`, so the prompt shows
+   in every new bash session — no shell switch needed. Pick a style once with:
+
+   ```bash
+   starship preset pastel-powerline -o ~/.config/starship.toml
+   # then open a new shell; tweak ~/.config/starship.toml anytime
+   ```
+
+   Client-side, the same Meslo LG Nerd Font requirement applies to the
+   prompt's icons.
 
 Unlike the Arch installer, this script does **not** install keyd or link
 Hyprland configs — those are desktop/keyboard-only and not useful on a
