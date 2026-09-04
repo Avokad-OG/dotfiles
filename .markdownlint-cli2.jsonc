@@ -1,0 +1,12 @@
+{
+  "config": {
+    // A `title:` in YAML frontmatter should NOT count as the document's
+    // top-level heading. That way a single H1 in the body is allowed while
+    // MD025 still catches genuinely multiple H1s in one document.
+    "MD025": {
+      "front_matter_title": false
+    },
+    // Line-length limit: off (breaks tables, long URLs, wrapped prose).
+    "MD013": false
+  }
+}

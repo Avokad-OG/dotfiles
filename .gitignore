@@ -1,0 +1,16 @@
+# OS / editor junk
+.DS_Store
+*~
+*.swp
+*.swo
+.fuse_hidden*
+
+# tmux plugins installed by TPM (per-machine, not tracked)
+.config/tmux/plugins/
+
+# lazy.nvim plugin lock (kept per-machine so each host updates independently)
+.config/nvim/lazy-lock.json
+
+# Local test artifacts
+tt.*
+foo.*
