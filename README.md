@@ -158,3 +158,8 @@ breaks the tap-to-toggle behavior. Current options:
   (`mise use -g dotnet@latest`) and the same global tool. The nvim config sets
   `DOTNET_ROOT` and adds the default tool directory to PATH automatically when
   the SDK is present.
+
+## Useful link
+
+- [UTM macOS --> Ubuntu activate Shared folder:
+  https://dev.to/smyekh/the-oci-developers-workflow-bridging-your-mac-and-local-vm-with-a-shared-folder-34ic]
