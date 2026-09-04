@@ -5,17 +5,15 @@
 -- Press `jk` (in insert mode) to exit back to normal mode
 vim.keymap.set("i", "jk", "<Esc>", { desc = "Exit insert mode with jk" })
 
--- C-h/j/k/l: switch nvim windows, and tmux panes when at the edge.
--- Requires the vim-tmux-navigator plugin (see plugins/tmux-navigator.lua)
--- and the C-h/j/k/l bindings in ~/.config/tmux/tmux.conf
+-- C-h/j/k/l: move between nvim windows, and into tmux panes at the edge
+-- (commands provided by the vim-tmux-navigator plugin).
 vim.keymap.set("n", "<C-h>", "<cmd>TmuxNavigateLeft<CR>", { desc = "Window/Tmux Left" })
 vim.keymap.set("n", "<C-j>", "<cmd>TmuxNavigateDown<CR>", { desc = "Window/Tmux Down" })
 vim.keymap.set("n", "<C-k>", "<cmd>TmuxNavigateUp<CR>", { desc = "Window/Tmux Up" })
 vim.keymap.set("n", "<C-l>", "<cmd>TmuxNavigateRight<CR>", { desc = "Window/Tmux Right" })
 
--- Toggle LSP inlay hints (the auto-appended lambda/parameter name & type text
--- like "middleware:", "HttpContext context", "value:"). Off by default for C#
--- (see plugins/lspconfig.lua); press this to turn them on/off in the current buffer.
+-- Toggle LSP inlay hints (auto-appended parameter/type names) in the current
+-- buffer. Inlay hints are off by default, so this mapping turns them on/off.
 vim.keymap.set("n", "<M-i>", function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 })
 end, { desc = "Toggle inlay hints" })

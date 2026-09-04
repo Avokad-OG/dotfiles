@@ -4,7 +4,8 @@ require("config.remote_clipboard").setup()
 vim.opt.relativenumber = false
 vim.g.autoformat = true
 
--- LuaRocks binaries (the installer places luacheck here by default).
+-- Prepend the LuaRocks local bin so luacheck (installed outside Mason,
+-- not under the Mason bin configured below) is launchable.
 local luarocks_bin = vim.env.LUA_ROCKS_BIN or vim.fn.expand("~/.luarocks/bin")
 if vim.fn.isdirectory(luarocks_bin) == 1 then
   vim.env.PATH = luarocks_bin .. ":" .. vim.env.PATH
