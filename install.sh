@@ -2,7 +2,7 @@
 # Per-OS dotfiles installer dispatcher.
 #
 # Detects the distro and runs the matching per-OS installer:
-#   install-omarchy.sh Arch / Omarchy OS: keyd + all configs
+#   install-omarchy.sh Arch / Omarchy OS: keyd + nvim + tmux configs
 #   install-ubuntu.sh   Ubuntu / Debian (apt-based): nvim + tmux configs
 #   install-pi.sh       Raspberry Pi OS 64-bit Trixie/aarch64
 #   install-macos.sh    macOS: Xcode Command Line Tools + Homebrew
