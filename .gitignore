@@ -11,6 +11,9 @@
 # lazy.nvim plugin lock (kept per-machine so each host updates independently)
 .config/nvim/lazy-lock.json
 
+# Obsidian vault spec (per-machine; referenced by nvim's obsidian.lua)
+.config/obsidian-nvim/
+
 # Local test artifacts
 tt.*
 foo.*

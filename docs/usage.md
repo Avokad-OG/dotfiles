@@ -89,9 +89,12 @@ make the running app pick up changes:
   `.config/nvim/lua/plugins/linting.lua`); Prettier (`prettierd` via
   `.config/nvim/lua/plugins/formatting.lua`) wraps Markdown to 80 cols using
   `~/.prettierrc.json`.
-- **Obsidian (optional)** — `.config/nvim/lua/plugins/obsidian.lua` ships with
-  no workspaces. If you use Obsidian, uncomment its `workspaces` block and
-  point it at your vault (any directory containing an `.obsidian` folder).
+- **Obsidian (optional)** — `.config/nvim/lua/plugins/obsidian.lua` stays
+  disabled until a per-machine spec file exists at
+  `~/.config/obsidian-nvim/workspaces.lua`. That file returns the `workspaces`
+  list (name, path, and per-workspace `overrides` such as the templates
+  folder); see the example in the plugin file's header. Workspace paths must
+  exist on disk, otherwise they are skipped.
 
 ## Client-side
 
