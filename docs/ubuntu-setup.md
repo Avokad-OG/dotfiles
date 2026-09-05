@@ -65,9 +65,8 @@ exists (symlink to elsewhere or a real file) is reported and skipped.
 
    Import the prompt icons client-side too — see the Nerd Font note below.
 
-Unlike the Arch installer, this script does **not** install keyd or link
-Hyprland configs — those are desktop/keyboard-only and not useful on a headless
-server.
+Unlike the Arch installer, this script does **not** install keyd — keyd is
+keyboard-only and not useful on a headless server.
 
 ## After first install
 
