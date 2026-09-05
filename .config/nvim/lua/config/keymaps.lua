@@ -12,12 +12,6 @@ vim.keymap.set("n", "<C-j>", "<cmd>TmuxNavigateDown<CR>", { desc = "Window/Tmux 
 vim.keymap.set("n", "<C-k>", "<cmd>TmuxNavigateUp<CR>", { desc = "Window/Tmux Up" })
 vim.keymap.set("n", "<C-l>", "<cmd>TmuxNavigateRight<CR>", { desc = "Window/Tmux Right" })
 
--- Toggle LSP inlay hints (auto-appended parameter/type names) in the current
--- buffer. Inlay hints are off by default, so this mapping turns them on/off.
-vim.keymap.set("n", "<M-i>", function()
-  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }), { bufnr = 0 })
-end, { desc = "Toggle inlay hints" })
-
 -- Search and replace in the current buffer (editor-style: input is treated literally)
 -- <leader>rr: replace all matches without confirmation
 -- <leader>rc: ask for confirmation before each replacement

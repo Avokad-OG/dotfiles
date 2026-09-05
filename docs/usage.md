@@ -84,6 +84,8 @@ make the running app pick up changes:
 
 ## Editor notes (shared)
 
+- **Keymaps** — see [neovim-keymaps.md](neovim-keymaps.md) for the custom
+  and default keymaps relevant to this config.
 - **Markdown formatting** — `markdownlint-cli2` needs an explicit
   `--config ~/.markdownlint-cli2.jsonc` (the config is passed by
   `.config/nvim/lua/plugins/linting.lua`); Prettier (`prettierd` via

@@ -2,10 +2,9 @@ return {
 	-- Load all theme plugins but don't apply them
 	-- This ensures all colorschemes are available for hot-reloading
 	--
-	-- Omarchy 4 generates most theme specs from default/themed/neovim.lua.tpl on
-	-- top of aether, so the single-theme plugins below (ethereal, vantablack,
-	-- white, monokai-pro, miasma) are only reached by Omarchy 3.8, which ships a
-	-- neovim.lua per theme. Keep them until 3.8 is out of support.
+	-- Omarchy 4 renders themes that ship only a colors.toml through aether.nvim
+	-- (default/themed/neovim.lua.tpl); the other stock themes ship their own
+	-- neovim.lua and reference one dedicated plugin each, listed below.
 	{
 		"ribru17/bamboo.nvim",
 		lazy = true,
@@ -26,22 +25,7 @@ return {
 		priority = 1000,
 	},
 	{
-		"bjarneo/ethereal.nvim",
-		lazy = true,
-		priority = 1000,
-	},
-	{
 		"bjarneo/hackerman.nvim",
-		lazy = true,
-		priority = 1000,
-	},
-	{
-		"bjarneo/vantablack.nvim",
-		lazy = true,
-		priority = 1000,
-	},
-	{
-		"bjarneo/white.nvim",
 		lazy = true,
 		priority = 1000,
 	},
@@ -77,13 +61,6 @@ return {
 		priority = 1000,
 	},
 	{
-		-- Repo was transferred from gthelding to loctvl842 (old URL 404s,
-		-- which broke lazy updates). Same history, so the lock commit still matches.
-		"loctvl842/monokai-pro.nvim",
-		lazy = true,
-		priority = 1000,
-	},
-	{
 		"EdenEast/nightfox.nvim",
 		lazy = true,
 		priority = 1000,
@@ -101,11 +78,6 @@ return {
 	},
 	{
 		"folke/tokyonight.nvim",
-		lazy = true,
-		priority = 1000,
-	},
-	{
-		"OldJobobo/miasma.nvim",
 		lazy = true,
 		priority = 1000,
 	},

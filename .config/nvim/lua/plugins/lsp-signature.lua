@@ -39,9 +39,5 @@ return {
   },
   config = function(_, opts)
     require("lsp_signature").setup(opts)
-
-    -- Neovim's built-in signature-help (bound to <C-k>/gK by LazyVim) builds its
-    -- own separate doc-heavy floating window that ignores lsp_signature's
-    -- handler. Disable it so ONLY lsp_signature's window appears.
   end,
 }

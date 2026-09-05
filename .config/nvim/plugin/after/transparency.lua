@@ -22,20 +22,17 @@ local groups = {
 	"CursorLineNr",
 	"NormalNC",
 	"WhichKeyFloat",
-	"TelescopeBorder",
-	"TelescopeNormal",
-	"TelescopePromptBorder",
-	"TelescopePromptTitle",
+	-- snacks picker
+	"SnacksPicker",
+	"SnacksPickerList",
+	"SnacksPickerInput",
+	"SnacksPickerPreview",
 	-- neotree
 	"NeoTreeNormal",
 	"NeoTreeNormalNC",
 	"NeoTreeVertSplit",
 	"NeoTreeWinSeparator",
 	"NeoTreeEndOfBuffer",
-	-- nvim-tree
-	"NvimTreeNormal",
-	"NvimTreeVertSplit",
-	"NvimTreeEndOfBuffer",
 	-- notify
 	"NotifyINFOBody",
 	"NotifyERRORBody",
