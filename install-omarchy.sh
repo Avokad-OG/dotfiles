@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
-# Omarchy installer: links the user dotfiles, installs keyd + luacheck, and
-# ensures Node.js and the .NET SDK are available via mise (Omarchy's runtime
-# manager). Omarchy preinstalls Node.js (via mise), luarocks, nvim, tmux,
-# git, ...; this script only adds what Omarchy does not ship. Idempotent: safe
-# to re-run.
+# Omarchy installer: applies the repo-owned Neovim and tmux configs, installs
+# keyd + luacheck, and ensures Node.js and the .NET SDK are available via mise
+# (Omarchy's runtime manager). Omarchy preinstalls Node.js (via mise), luarocks,
+# nvim, tmux, git, ...; this script only adds what Omarchy does not ship.
+#
+# Hyprland, kitty, and Starship are intentionally left to Omarchy: it seeds and
+# refreshes those configs itself. Neovim and tmux.conf replace the stock configs
+# Omarchy seeds -- nvim is backed up and symlinked, tmux.conf is adopted only
+# while it is still the stock default. Idempotent: safe to re-run.
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+OMARCHY_PATH="${OMARCHY_PATH:-/usr/share/omarchy}"
 
 # shellcheck source=lib.sh
 source "$DOTFILES_DIR/lib.sh"
@@ -151,21 +156,105 @@ configure_keyd() {
   echo "keyd:   configured and running"
 }
 
+# Symlink one file into ~/.config, adopting the path only when it is still
+# the stock Omarchy default (or absent). Omarchy seeds ~/.config with real
+# files from /etc/skel and can overwrite them via `omarchy refresh`, so
+# linking the single file this repo owns keeps the rest under Omarchy's control
+# and never clobbers a local edit.
+link_stock_config() {
+  local rel="$1"
+  local src="$DOTFILES_DIR/.config/$rel"
+  local dst="$HOME/.config/$rel"
+  local stock="$OMARCHY_PATH/config/$rel"
+  local backup
+  local target
+
+  if [[ ! -e "$src" ]]; then
+    printf 'Error: link source does not exist: %s\n' "$src" >&2
+    return 1
+  fi
+
+  if [[ -L "$dst" ]]; then
+    target="$(readlink "$dst")"
+    if [[ "$target" == "$src" ]]; then
+      echo "ok:     $dst already linked to repo"
+    else
+      echo "skip:   $dst symlinks to $target (not the repo)"
+    fi
+    return 0
+  fi
+
+  if [[ -e "$dst" ]]; then
+    if [[ -e "$stock" ]] && cmp -s "$dst" "$stock"; then
+      backup="$dst.bak.repo-$(date +%s)"
+      mv "$dst" "$backup"
+      echo "backed: $dst -> $backup (stock Omarchy default)"
+    else
+      echo "skip:   $dst differs from the Omarchy default; repo config not applied"
+      return 0
+    fi
+  fi
+
+  mkdir -p "$(dirname "$dst")"
+  ln -s "$src" "$dst"
+  echo "linked: $dst -> $src"
+}
+
+# Replace ~/.config/nvim with a symlink to the repo's config. Omarchy seeds a
+# stock nvim config as a real directory (with its theme.lua symlink), so the
+# generic link() would skip it. Back it up before linking; the repo config
+# reimplements Omarchy's theme.lua as a resilient file, so Omarchy theme
+# switching keeps working.
+link_nvim() {
+  local src="$DOTFILES_DIR/.config/nvim"
+  local dst="$HOME/.config/nvim"
+  local backup
+  local target
+
+  if [[ ! -e "$src" ]]; then
+    printf 'Error: link source does not exist: %s\n' "$src" >&2
+    return 1
+  fi
+
+  if [[ -L "$dst" ]]; then
+    target="$(readlink "$dst")"
+    if [[ "$target" == "$src" ]]; then
+      echo "ok:     $dst already linked to repo"
+    else
+      echo "skip:   $dst symlinks to $target (not the repo)"
+    fi
+    return 0
+  fi
+
+  if [[ -e "$dst" ]]; then
+    backup="$dst.bak.repo-$(date +%s)"
+    mv "$dst" "$backup"
+    echo "backed: $dst -> $backup"
+  fi
+
+  mkdir -p "$(dirname "$dst")"
+  ln -s "$src" "$dst"
+  echo "linked: $dst -> $src"
+}
+
 main() {
   prepare_sudo
 
   install_node
   install_dotnet
   install_roslyn_language_server
-  link_common_dotfiles
-  link "$DOTFILES_DIR/.config/hypr" \
-    "$HOME/.config/hypr"
-  link "$DOTFILES_DIR/.config/kitty" \
-    "$HOME/.config/kitty"
-  # Starship is enabled by Omarchy's own bash init, so the prompt config
-  # follows the same repo-symlink scheme as the other user configs.
-  link "$DOTFILES_DIR/.config/starship.toml" \
-    "$HOME/.config/starship.toml"
+
+  # Shared dotfiles that Omarchy does not seed.
+  link "$DOTFILES_DIR/.markdownlint-cli2.jsonc" \
+    "$HOME/.markdownlint-cli2.jsonc"
+  link "$DOTFILES_DIR/.prettierrc.json" \
+    "$HOME/.prettierrc.json"
+
+  # Only the repo-owned configs: neovim (whole dir, backed up) and tmux.conf
+  # (single file). Hyprland, kitty, and Starship stay under Omarchy's control.
+  link_nvim
+  link_stock_config "tmux/tmux.conf"
+
   install_tpm
   install_luacheck
 

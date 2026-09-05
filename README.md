@@ -47,7 +47,7 @@ Each OS guide documents its installer and machine-specific behavior.
 .config/
 ├── nvim/          -> ~/.config/nvim           (LazyVim)
 ├── tmux/          -> ~/.config/tmux           (tmux.conf)
-├── hypr/          -> ~/.config/hypr           (Hyprland)
+├── hypr/          -> ~/.config/hypr           (Hyprland; tracked, not auto-linked)
 ├── kitty/         -> ~/.config/kitty          (kitty, macOS)
 └── starship.toml  -> ~/.config/starship.toml  (Starship prompt)
 .markdownlint-cli2.jsonc -> ~/.markdownlint-cli2.jsonc  (Markdown lint config)

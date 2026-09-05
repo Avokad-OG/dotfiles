@@ -52,9 +52,11 @@ Trixie, Arch/Omarchy). No test suite or CI exists: run the checks under
   are meant to be standalone or invoked as libraries). Always fail loudly on
   trouble rather than continuing silently past an error.
 - Idempotency is mandatory: reuse the `*_present()`/`*_installed()` guards,
-  symlink only via `link()`/`link_system()`, never overwrite, keep the
-  `ok:`/`skip:`/`linked:` status lines. Errors to stderr, exit non-zero,
-  clean up temp files.
+  symlink via `link()`/`link_system()`, and adopt a stock Omarchy file only
+  via the `link_stock_config()`/`link_nvim()` helpers (which back it up
+  first); never overwrite a locally edited file. Keep the
+  `ok:`/`skip:`/`linked:`/`backed:` status lines. Errors to stderr, exit
+  non-zero, clean up temp files.
 - Keep version pins and download URLs overridable rather than inline
   literals, and in one obvious place per script (lib.sh defaults for the
   installers; top-of-file defaults for standalone `setup-*.sh`).
@@ -76,9 +78,9 @@ Trixie, Arch/Omarchy). No test suite or CI exists: run the checks under
 
 ## App configs
 
-- keyd: edit `etc/keyd/default.conf`, then `sudo keyd reload`. Never use
-  `compose:caps` in `.config/hypr/input.lua` — it breaks keyd's Caps Lock
-  tap-to-toggle.
+- keyd: edit `etc/keyd/default.conf`, then `sudo keyd reload`. Caps Lock is a
+  pure Fn layer (`layer(fn)`) that never emits the Caps Lock keycode, so
+  Hyprland's `compose:caps` default is unaffected.
 - Hyprland `.config/hypr/*.lua` auto-reloads on save; validate with
   `hyprctl configerrors`.
 - `.config/tmux/tmux.conf` expects untracked TPM at
