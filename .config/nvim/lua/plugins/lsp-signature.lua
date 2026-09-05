@@ -20,8 +20,9 @@ return {
 
     -- Window sizing (max_height is clamped to available screen space).
     max_height = 20,
+    -- max_width must be an integer (nvim_open_win rejects floats).
     max_width = function()
-      return vim.api.nvim_win_get_width(0) * 0.8
+      return math.floor(vim.api.nvim_win_get_width(0) * 0.8)
     end,
 
     always_trigger = false,

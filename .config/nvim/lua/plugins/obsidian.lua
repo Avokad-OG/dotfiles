@@ -16,7 +16,7 @@ return {
     -- commands (deprecated, removed in 4.0.0).
     legacy_commands = false,
     picker = {
-      name = "snacks.pick", -- LazyVim's default picker (snacks.nvim)
+      name = "snacks.picker", -- LazyVim's default picker (snacks.nvim)
     },
     -- Workspaces are opt-in; if you use Obsidian, point this at your own
     -- vault (any directory containing an .obsidian folder), e.g.:
