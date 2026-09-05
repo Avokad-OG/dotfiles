@@ -15,8 +15,8 @@ You can also run the installer directly:
 ## What it does
 
 - Uses Omarchy's preinstalled toolchain (Node.js via mise, luarocks, nvim,
-  tmux, git, unzip, ...) and ensures Node.js and the .NET SDK (with the
-  `roslyn-language-server` global tool) are installed via mise.
+  tmux, git, unzip, ...) and ensures Node.js and the .NET SDK are installed
+  via mise.
 - Applies only the repo-owned Neovim and tmux configs:
   - Backs up Omarchy's stock `~/.config/nvim` and symlinks the repo's Neovim
     config in its place (the repo reimplements Omarchy's `theme.lua` symlink
@@ -51,8 +51,9 @@ touch these paths.
 ## .NET
 
 The Omarchy installer ensures the .NET SDK via mise (`mise use -g
-dotnet@latest`) and the same global `roslyn-language-server` tool. If you
-don't need C# / csharpier, this is optional.
+dotnet@latest`); the Roslyn language server itself is installed by Neovim
+through Mason on first use. If you don't need C# / csharpier, this is
+optional.
 
 ## keyd (key remapping)
 

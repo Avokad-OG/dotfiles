@@ -71,7 +71,7 @@ Trixie, Arch/Omarchy). No test suite or CI exists: run the checks under
   except `luacheck` (Mason-incompatible with Lua 5.5; install via
   Homebrew/LuaRocks, wire as the `lua` linter in `linting.lua`).
 - Formatters in `formatting.lua`, linters in `linting.lua`.
-- C# uses `roslyn_ls` (dotnet global tool at `~/.dotnet/tools`); never
+- C# uses `roslyn_ls` (LazyVim installs/runs it via Mason); never
   `csharp-ls`.
 - Invoke `markdownlint-cli2` with an explicit `--config
   ~/.markdownlint-cli2.jsonc`.

@@ -65,11 +65,9 @@ Only override download URLs when you trust the source. If you change
 ## .NET / C# support
 
 The nvim config uses the Microsoft **Roslyn** language server (`roslyn_ls`),
-installed as a per-user global .NET tool at `~/.dotnet/tools`
-(`roslyn-language-server`). The installers add that dir (and `~/.dotnet` when
-the SDK is there) to PATH; on a fresh interactive shell both `dotnet` and the
-language server tool are reachable. C# formatting maps to csharpier, which
-also needs the .NET SDK. Edit path-related config in `.config/nvim/lua/config/options.lua`.
+installed and run by Neovim through Mason (the `roslyn-language-server`
+package). C# formatting maps to csharpier, which needs the .NET SDK. Edit
+path-related config in `.config/nvim/lua/config/options.lua`.
 
 ## Editing & reloading configs
 

@@ -85,38 +85,6 @@ install_dotnet() {
   echo "dotnet:  installed via mise ($dotnet)"
 }
 
-# Omarchy variant of lib.sh's install_roslyn_language_server: resolves dotnet
-# via mise instead of ~/.dotnet (global tools still land in ~/.dotnet/tools).
-install_roslyn_language_server() {
-  local dotnet
-
-  if [[ -x "$HOME/.dotnet/tools/roslyn-language-server" ]]; then
-    echo "ok:     roslyn language server already installed"
-    return 0
-  fi
-
-  # Prefer the mise-managed SDK over a system dotnet (which on Omarchy may be
-  # the runtime-only dotnet-runtime package).
-  dotnet="$(mise which dotnet 2>/dev/null || true)"
-  if [[ -z "$dotnet" ]]; then
-    dotnet="$(command -v dotnet 2>/dev/null || true)"
-  fi
-  if [[ -z "$dotnet" ]]; then
-    printf 'Error: dotnet is required to install Roslyn.\n' >&2
-    return 1
-  fi
-
-  echo "Roslyn language server not found; installing globally..."
-  run_quietly "$dotnet" tool install --global roslyn-language-server --prerelease
-
-  if [[ ! -x "$HOME/.dotnet/tools/roslyn-language-server" ]]; then
-    printf 'Error: Roslyn installation completed, but the executable was not found.\n' >&2
-    return 1
-  fi
-
-  echo "Roslyn language server installed: $HOME/.dotnet/tools/roslyn-language-server"
-}
-
 install_keyd() {
   if command -v keyd >/dev/null 2>&1 &&
     pacman -Q keyd >/dev/null 2>&1; then
@@ -242,7 +210,6 @@ main() {
 
   install_node
   install_dotnet
-  install_roslyn_language_server
 
   # Shared dotfiles that Omarchy does not seed.
   link "$DOTFILES_DIR/.markdownlint-cli2.jsonc" \

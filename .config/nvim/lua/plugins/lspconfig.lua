@@ -1,7 +1,7 @@
 -- C# via the Microsoft Roslyn language server (roslyn_ls), with csharp-ls
--- kept disabled. roslyn_ls runs as the roslyn-language-server dotnet global
--- tool (installed and on PATH); it only starts inside a project (.sln/.csproj
--- above the file).
+-- kept disabled. LazyVim installs and runs roslyn_ls through Mason (the
+-- roslyn-language-server package); it only starts inside a project
+-- (.sln/.csproj above the file).
 --
 -- LazyVim enables inlay hints for all LSP languages by default
 -- (inlay_hints.enabled = true). For roslyn_ls these show lambda/parameter
