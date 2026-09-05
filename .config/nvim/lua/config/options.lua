@@ -27,17 +27,27 @@ if vim.fn.isdirectory(mise_shims) == 1 then
   vim.env.PATH = mise_shims .. ":" .. vim.env.PATH
 end
 
--- .NET (prepended last so ~/.dotnet ends up first on PATH). .NET apphosts
--- like roslyn-language-server locate their runtime by taking the first
--- `dotnet` on PATH; the mise shim (mise/shims/dotnet -> /usr/bin/mise)
--- resolves to /usr/bin, which has no runtime, so dotnet must precede it.
--- This matches macOS, where dotnet only lives in ~/.dotnet.
+-- .NET: apphosts like roslyn-language-server locate their runtime through
+-- DOTNET_ROOT (then fall back to the system runtime). Prepend the real dotnet
+-- so it wins over any shim, and point DOTNET_ROOT at the SDK install.
 local dotnet_root = vim.fn.expand("~/.dotnet")
 local dotnet_tools = dotnet_root .. "/tools"
 if vim.fn.isdirectory(dotnet_tools) == 1 then
   vim.env.PATH = dotnet_tools .. ":" .. vim.env.PATH
 end
 if vim.fn.executable(dotnet_root .. "/dotnet") == 1 then
+  -- macOS / Ubuntu / Pi: the SDK lives under ~/.dotnet.
   vim.env.DOTNET_ROOT = dotnet_root
   vim.env.PATH = dotnet_root .. ":" .. vim.env.PATH
+else
+  -- Omarchy: the SDK is managed by mise. Resolve its install root so apphosts
+  -- use the SDK's runtime rather than falling back to Omarchy's runtime-only
+  -- system package.
+  local mise_dotnet = vim.fn.system({ "mise", "which", "dotnet" }):gsub("%s+$", "")
+  if vim.v.shell_error == 0 and mise_dotnet ~= "" then
+    local mise_root = mise_dotnet:gsub("/dotnet$", "")
+    if vim.fn.isdirectory(mise_root .. "/host/fxr") == 1 then
+      vim.env.DOTNET_ROOT = mise_root
+    end
+  end
 end
