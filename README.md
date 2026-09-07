@@ -1,7 +1,7 @@
 # dotfiles
 
 Personal dotfiles and installer scripts for Neovim (LazyVim), tmux, kitty,
-Hyprland, Starship, and keyd, designed to be installed side-by-side on my
+Hyprland, Starship, git, and keyd, designed to be installed side-by-side on my
 machines: macOS, Ubuntu/Debian, Raspberry Pi OS (Trixie/aarch64), and
 Arch/Omarchy.
 
@@ -47,6 +47,7 @@ Each OS guide documents its installer and machine-specific behavior.
 .config/
 ├── nvim/          -> ~/.config/nvim           (LazyVim)
 ├── tmux/          -> ~/.config/tmux           (tmux.conf)
+├── git/config     -> ~/.config/git/config     (git; includes untracked config.local)
 ├── hypr/          -> ~/.config/hypr           (Hyprland; tracked, not auto-linked)
 ├── kitty/         -> ~/.config/kitty          (kitty, macOS)
 └── starship.toml  -> ~/.config/starship.toml  (Starship prompt)
@@ -59,3 +60,7 @@ docs/        usage.md + per-OS setup guides (see links above)
 
 Each file points at its live destination; edits here are live on the machine
 once the symlink exists (and reloaded — see the relevant doc).
+
+Machine-specific git values (`user.name`, `user.email`, credential helpers) go
+in `~/.config/git/config.local`, which the tracked git config includes and
+which is intentionally not committed. See [Usage](docs/usage.md).

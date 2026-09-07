@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
-# Omarchy installer: applies the repo-owned Neovim and tmux configs, installs
-# keyd + luacheck, and ensures Node.js and the .NET SDK are available via mise
-# (Omarchy's runtime manager). Omarchy preinstalls Node.js (via mise), luarocks,
-# nvim, tmux, git, ...; this script only adds what Omarchy does not ship.
+# Omarchy installer: applies the repo-owned Neovim, tmux, and git configs,
+# installs keyd + luacheck + git-delta, and ensures Node.js and the .NET SDK
+# are available via mise (Omarchy's runtime manager). Omarchy preinstalls
+# Node.js (via mise), luarocks, nvim, tmux, git, ...; this script only adds
+# what Omarchy does not ship.
 #
 # Hyprland, kitty, and Starship are intentionally left to Omarchy: it seeds and
-# refreshes those configs itself. Neovim and tmux.conf replace the stock configs
-# Omarchy seeds -- nvim is backed up and symlinked, tmux.conf is adopted only
-# while it is still the stock default. Idempotent: safe to re-run.
+# refreshes those configs itself. Neovim, tmux.conf, and git config replace the
+# stock configs Omarchy seeds -- nvim is backed up and symlinked, tmux.conf is
+# adopted only while it is still the stock default, and git config is backed up
+# and symlinked with its user.* values preserved into
+# ~/.config/git/config.local first. Idempotent: safe to re-run.
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -102,6 +105,25 @@ install_keyd() {
   fi
 
   echo "keyd:   installed"
+}
+
+install_git_delta() {
+  if command -v delta >/dev/null 2>&1 &&
+    pacman -Q git-delta >/dev/null 2>&1; then
+    echo "ok:     git-delta already installed"
+    return 0
+  fi
+
+  echo "git-delta: installing..."
+  run_quietly omarchy pkg add git-delta
+
+  if ! command -v delta >/dev/null 2>&1 ||
+    ! pacman -Q git-delta >/dev/null 2>&1; then
+    printf 'Error: git-delta did not install.\n' >&2
+    exit 1
+  fi
+
+  echo "git-delta: installed"
 }
 
 configure_keyd() {
@@ -205,11 +227,60 @@ link_nvim() {
   echo "linked: $dst -> $src"
 }
 
+# Symlink the repo's git config into ~/.config/git/config. Omarchy seeds a
+# stock git config and its installer writes user.name/user.email into it, so
+# the generic link() would skip it. Back it up before linking and carry any
+# user.* values into the untracked ~/.config/git/config.local (which the
+# tracked config includes) so they survive the swap.
+link_git_config() {
+  local src="$DOTFILES_DIR/.config/git/config"
+  local dst="$HOME/.config/git/config"
+  local local_config="$HOME/.config/git/config.local"
+  local backup
+  local name
+  local email
+  local target
+
+  if [[ ! -e "$src" ]]; then
+    printf 'Error: link source does not exist: %s\n' "$src" >&2
+    return 1
+  fi
+
+  if [[ -L "$dst" ]]; then
+    target="$(readlink "$dst")"
+    if [[ "$target" == "$src" ]]; then
+      echo "ok:     $dst already linked to repo"
+    else
+      echo "skip:   $dst symlinks to $target (not the repo)"
+    fi
+    return 0
+  fi
+
+  if [[ -e "$dst" && ! -e "$local_config" ]]; then
+    mkdir -p "$(dirname "$local_config")"
+    name="$(git config --file "$dst" --get user.name 2>/dev/null || true)"
+    email="$(git config --file "$dst" --get user.email 2>/dev/null || true)"
+    [[ -z "$name" ]] || git config --file "$local_config" user.name "$name"
+    [[ -z "$email" ]] || git config --file "$local_config" user.email "$email"
+  fi
+
+  if [[ -e "$dst" ]]; then
+    backup="$dst.bak.repo-$(date +%s)"
+    mv "$dst" "$backup"
+    echo "backed: $dst -> $backup"
+  fi
+
+  mkdir -p "$(dirname "$dst")"
+  ln -s "$src" "$dst"
+  echo "linked: $dst -> $src"
+}
+
 main() {
   prepare_sudo
 
   install_node
   install_dotnet
+  install_git_delta
 
   # Shared dotfiles that Omarchy does not seed.
   link "$DOTFILES_DIR/.markdownlint-cli2.jsonc" \
@@ -217,16 +288,21 @@ main() {
   link "$DOTFILES_DIR/.prettierrc.json" \
     "$HOME/.prettierrc.json"
 
-  # Only the repo-owned configs: neovim (whole dir, backed up) and tmux.conf
-  # (single file). Hyprland, kitty, and Starship stay under Omarchy's control.
+  # Repo-owned configs that replace Omarchy's seeded defaults: nvim (whole
+  # dir, backed up), tmux.conf (stock only), and git config (backed up; its
+  # user.* values are preserved into ~/.config/git/config.local first).
+  # Hyprland, kitty, and Starship stay under Omarchy's control.
   link_nvim
   link_stock_config "tmux/tmux.conf"
+  link_git_config
 
   install_tpm
   install_luacheck
 
   install_keyd
   configure_keyd
+  setup_gh_rc "$HOME/.bashrc"
+  prompt_gh_auth_login
 
   echo
   echo "Done. First nvim launch bootstraps lazy.nvim and installs"

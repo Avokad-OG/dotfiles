@@ -25,7 +25,8 @@ exists (symlink to elsewhere or a real file) is reported and skipped.
 1. **nvim** — detected via `command -v nvim` or the official release-tarball
    location `/opt/nvim-linux-x86_64/bin/nvim`; installed from the official
    release tarball when absent. (An existing nvim at `/opt` is left alone.)
-2. **tmux** — installed via apt only when absent.
+2. **tmux and git-delta** — installed via apt only when absent (`git-delta`
+   provides the `delta` pager used by the tracked git config).
 3. **unzip** — installed via apt only when absent (Mason needs it to extract
    .zip-based packages such as stylua and lemminx).
 4. **python3-venv** — installed via apt (Mason's Python-based tools, e.g.
@@ -42,6 +43,7 @@ exists (symlink to elsewhere or a real file) is reported and skipped.
 7. **Symlinks** (user-level only, no `/etc`, no sudo once the packages exist):
    - `.config/nvim` → `~/.config/nvim`
    - `.config/tmux` → `~/.config/tmux`
+   - `.config/git/config` → `~/.config/git/config`
    - `.config/starship.toml` → `~/.config/starship.toml` (linked before the
      Starship setup in step 8 so the new prompt already has a style)
    - `.markdownlint-cli2.jsonc` → `~/.markdownlint-cli2.jsonc`
@@ -64,6 +66,9 @@ exists (symlink to elsewhere or a real file) is reported and skipped.
    ```
 
    Import the prompt icons client-side too — see the Nerd Font note below.
+9. **GitHub CLI** — appends a `gh()` wrapper to `~/.bashrc` (so gh writes git
+   credentials to `~/.config/git/config.local` rather than the tracked
+   config) and offers to run `gh auth login` interactively.
 
 Unlike the Arch installer, this script does **not** install keyd — keyd is
 keyboard-only and not useful on a headless server.

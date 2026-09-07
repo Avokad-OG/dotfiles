@@ -11,6 +11,10 @@
 # lazy.nvim plugin lock (kept per-machine so each host updates independently)
 .config/nvim/lazy-lock.json
 
+# Per-machine git values (user.name, user.email, credential helpers). The
+# tracked git config includes this path; it must never be committed.
+.config/git/config.local
+
 # Obsidian vault spec (per-machine; referenced by nvim's obsidian.lua)
 .config/obsidian-nvim/
 

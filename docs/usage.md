@@ -26,6 +26,40 @@ These run once, on every new machine:
      server start. Set `@continuum-restore 'off'` in tmux.conf to keep
      auto-save but disable auto-restore.
 
+## git config
+
+The tracked `.config/git/config` is symlinked to `~/.config/git/config` by
+every installer (macOS/Ubuntu/Pi via the shared dotfiles; Omarchy by adopting
+its seeded file). It holds the portable settings — aliases, merge/diff
+defaults, and the `delta` pager theme.
+
+Machine-specific, identifying values must not be committed. Put them in
+`~/.config/git/config.local`, a file you create by hand next to the symlink;
+the tracked config includes it. Typical contents:
+
+```ini
+[user]
+	name = Your Name
+	email = you@example.com
+[credential "https://github.com"]
+	helper = !gh auth git-credential
+```
+
+That file is intentionally **not** tracked. `git-delta` (the `delta` pager
+binary) is installed by every installer: Homebrew on macOS, the `git-delta`
+apt package on Ubuntu/Pi, and `omarchy pkg add git-delta` on Omarchy.
+
+Every installer appends a `gh()` wrapper to your shell rc so `gh auth login`
+and `gh auth setup-git` write git credentials into `config.local` (via
+`GIT_CONFIG_GLOBAL`) instead of the tracked file, and it then offers to run
+`gh auth login` interactively. For a one-off outside an interactive shell,
+run `GIT_CONFIG_GLOBAL=~/.config/git/config.local gh auth login`.
+
+If a machine still has a `~/.gitconfig`, it shadows `~/.config/git/config`
+(git reads it last, and `git config --global` writes there). Remove it — or
+move its machine-specific values into `config.local` — on machines migrated
+from `~/.gitconfig`.
+
 ## Environment overrides (installer tuning)
 
 The installers pull their defaults from `lib.sh` as `${VAR:-default}`, so they
@@ -76,6 +110,7 @@ make the running app pick up changes:
 
 - **Neovim** / **kitty** — restart the app.
 - **tmux** — `prefix + q` (reload) after editing `.config/tmux/tmux.conf`.
+- **git** — no reload needed; the next git command reads the updated config.
 - **Starship** — starts fresh per new shell; no reload needed.
 - **keyd / Hyprland** reload and config checking are Arch-specific — see
   [Arch guide](arch-setup.md).

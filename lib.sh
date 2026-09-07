@@ -116,6 +116,8 @@ link_common_dotfiles() {
     "$HOME/.config/nvim"
   link "$DOTFILES_DIR/.config/tmux" \
     "$HOME/.config/tmux"
+  link "$DOTFILES_DIR/.config/git/config" \
+    "$HOME/.config/git/config"
 }
 
 # Return CPU architecture in the naming convention used by Neovim releases.
@@ -144,7 +146,7 @@ cpu_architecture() {
 # actually missing and skip upgrades when none are pending.
 install_apt_packages() {
   local pkg
-  local -a to_install
+  local -a to_install=()
 
   for pkg in "$@"; do
     if dpkg-query -W -f='${db:Status-Abbrev}' "$pkg" 2>/dev/null | grep -q '^ii'; then
@@ -326,6 +328,64 @@ setup_bashrc() {
   else
     echo "$bashrc already configured; no changes made"
   fi
+}
+
+# Append a one-line gh() wrapper to a shell rc so `gh auth login` and
+# `gh auth setup-git` write git credentials into the untracked
+# ~/.config/git/config.local (which the tracked ~/.config/git/config
+# includes) instead of the tracked file. Idempotent.
+setup_gh_rc() {
+  local rc_file="$1"
+  local line
+  local added=0
+  local -a lines
+
+  lines=(
+    '# dotfiles installer: keep gh git-credential writes in config.local'
+    'gh() { GIT_CONFIG_GLOBAL="$HOME/.config/git/config.local" command gh "$@"; }'
+  )
+
+  if [[ ! -f "$rc_file" ]]; then
+    : >"$rc_file"
+    echo "Created $rc_file (did not exist)"
+  fi
+
+  for line in "${lines[@]}"; do
+    if ! grep -qxF -- "$line" "$rc_file"; then
+      printf '%s\n' "$line" >>"$rc_file"
+      added=1
+    fi
+  done
+
+  if ((added)); then
+    echo "Added gh wrapper to $rc_file"
+  else
+    echo "$rc_file already routes gh to config.local"
+  fi
+}
+
+# Offer to log into GitHub now. When confirmed, run `gh auth login` with
+# GIT_CONFIG_GLOBAL pointed at the untracked config.local so the credential
+# helper lands there rather than in the tracked config. Safe when stdin is not
+# a terminal: it skips instead of hanging.
+prompt_gh_auth_login() {
+  local answer
+
+  if ! command -v gh >/dev/null 2>&1; then
+    echo "gh is not installed; skipping gh auth login." >&2
+    return 0
+  fi
+
+  printf '\nWould you like to run `gh auth login` now? (y/N) '
+  read -r answer || true
+  case "$answer" in
+    y | Y | yes | YES | Yes)
+      GIT_CONFIG_GLOBAL="$HOME/.config/git/config.local" gh auth login
+      ;;
+    *)
+      echo "Skipping gh auth login."
+      ;;
+  esac
 }
 
 install_npm() {

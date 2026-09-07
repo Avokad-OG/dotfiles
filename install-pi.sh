@@ -36,7 +36,7 @@ main() {
 
   prepare_sudo
   install_apt_packages \
-    build-essential curl git gh unzip lazygit fontconfig xz-utils luarocks \
+    build-essential curl git gh unzip lazygit git-delta fontconfig xz-utils luarocks \
     "liblua${LUA_VERSION}-dev" nodejs npm python3-venv tmux
   install_dotnet
   install_roslyn_language_server
@@ -52,6 +52,8 @@ main() {
   upgrade_apt_packages
 
   setup_bashrc
+  setup_gh_rc "$HOME/.bashrc"
+  prompt_gh_auth_login
 
   echo
   echo "Done. PATH exports for the .NET SDK, luacheck and nvim were added"

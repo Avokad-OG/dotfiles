@@ -1,0 +1,62 @@
+# Portable git configuration, tracked in this dotfiles repo and symlinked to
+# ~/.config/git/config on every machine by the installers.
+
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+	sw = switch
+[init]
+	defaultBranch = master
+[pull]
+	rebase = true
+[push]
+	autoSetupRemote = true
+[diff]
+	algorithm = histogram
+	colorMoved = plain
+	mnemonicPrefix = true
+[commit]
+	verbose = true
+[column]
+	ui = auto
+[branch]
+	sort = -committerdate
+[tag]
+	sort = -version:refname
+[rerere]
+	enabled = true
+	autoupdate = true
+
+# git-delta (pager + diff highlighting); every installer installs it.
+[core]
+	pager = delta
+[interactive]
+	diffFilter = delta --color-only
+[merge]
+	conflictStyle = zdiff3
+[delta]
+	dark = true
+	true-color = always
+	navigate = true
+	line-numbers = true
+	minus-style                   = syntax "#4a272f"
+	minus-non-emph-style          = syntax "#4a272f"
+	minus-emph-style              = syntax "#713137"
+	minus-empty-line-marker-style = syntax "#4a272f"
+	line-numbers-minus-style      = "#914c54"
+	plus-style                    = syntax "#243e4a"
+	plus-non-emph-style           = syntax "#243e4a"
+	plus-emph-style               = syntax "#2c5a66"
+	plus-empty-line-marker-style  = syntax "#243e4a"
+	line-numbers-plus-style       = "#449dab"
+	line-numbers-zero-style       = "#3b4261"
+
+# Per-machine, identifying values (user.name, user.email, credential helpers
+# with absolute paths) must not be committed. They live in
+# ~/.config/git/config.local, next to this file, and are created by hand on
+# each machine; that file is intentionally NOT tracked. The include below
+# pulls it in (git resolves the relative path against this file's directory).
+[include]
+	path = config.local

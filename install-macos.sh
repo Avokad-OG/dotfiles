@@ -182,6 +182,9 @@ main() {
   link "$DOTFILES_DIR/.config/kitty" "$HOME/.config/kitty"
   install_tpm
 
+  setup_gh_rc "$HOME/.zshrc"
+  prompt_gh_auth_login
+
   # Add future macOS installations here.
 }
 

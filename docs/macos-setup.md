@@ -22,11 +22,14 @@ You can also run the installer directly:
 - Installs Homebrew when it is missing; existing Homebrew installations are
   updated and upgraded.
 - Installs the packages and applications listed in `Brewfile` (including
-  Node.js, required by Mason's npm-based linters), then enables the
+  Node.js, required by Mason's npm-based linters, and git-delta, the `delta`
+  pager used by the git config), then enables the
   brew-installed Powerlevel10k theme and plugins in `~/.zshrc` (run
   `p10k configure` in a new terminal afterwards to pick a prompt style).
-- Links the shared dotfiles, the kitty terminal config (Brewfile cask), and
-  installs TPM.
+- Links the shared dotfiles (including `~/.config/git/config`), the kitty
+  terminal config (Brewfile cask), and installs TPM.
+- Appends a `gh()` wrapper to `~/.zshrc` (routes gh git-credential writes to
+  `~/.config/git/config.local`) and offers to run `gh auth login`.
 
 The installer is idempotent. Existing dotfiles, unrelated symlinks, and an
 existing TPM installation are never overwritten. After the first run, reload

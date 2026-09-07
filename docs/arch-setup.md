@@ -17,15 +17,21 @@ You can also run the installer directly:
 - Uses Omarchy's preinstalled toolchain (Node.js via mise, luarocks, nvim,
   tmux, git, unzip, ...) and ensures Node.js and the .NET SDK are installed
   via mise.
-- Applies only the repo-owned Neovim and tmux configs:
+- Applies the repo-owned Neovim, tmux, and git configs:
   - Backs up Omarchy's stock `~/.config/nvim` and symlinks the repo's Neovim
     config in its place (the repo reimplements Omarchy's `theme.lua` symlink
     as a resilient file, so `omarchy theme set` keeps working in Neovim).
   - Symlinks `~/.config/tmux/tmux.conf` only while that file is still the
     stock Omarchy default; a locally edited file is left alone.
+  - Backs up Omarchy's seeded `~/.config/git/config` and symlinks the repo
+    file, first preserving any `user.name`/`user.email` into the untracked
+    `~/.config/git/config.local`.
 - Leaves Hyprland, kitty, and Starship to Omarchy to manage.
-- Installs keyd with `omarchy pkg add`, enables the `keyd` service, and links
-  `etc/keyd/default.conf` to `/etc/keyd/default.conf`.
+- Installs keyd and git-delta with `omarchy pkg add`; enables the `keyd`
+  service and links `etc/keyd/default.conf` to `/etc/keyd/default.conf`.
+- Adds a `gh()` wrapper to `~/.bashrc` so `gh auth login` / `gh auth
+  setup-git` write credentials to `~/.config/git/config.local`, then offers
+  to run `gh auth login` interactively.
 - Installs TPM and luacheck if missing.
 
 The installer is idempotent: it adopts a stock Omarchy file only once (backing
@@ -35,16 +41,20 @@ configured TPM plugins.
 
 ### Omarchy-managed paths
 
-`~/.config/tmux/tmux.conf` and `~/.config/nvim` replace configs Omarchy seeds
-from `/etc/skel`. Omarchy's reset commands copy over the destination rather
-than un-linking it, so they write *through* the repo symlinks:
+`~/.config/tmux/tmux.conf`, `~/.config/nvim`, and `~/.config/git/config`
+replace configs Omarchy seeds from `/etc/skel`. Omarchy's reset commands copy
+over the destination rather than un-linking it, so they write *through* the
+repo symlinks:
 
 - `omarchy refresh tmux` restores the stock `tmux.conf` into the repo file.
+- `omarchy refresh config git/config` restores the stock git config into the
+  repo file.
 - `omarchy reinstall` / `omarchy reinstall-configs` replay `/etc/skel` and can
-  overwrite the symlinked Neovim tree.
+  overwrite the symlinked Neovim tree and git config.
 
-After either, `git status` in the repo shows the overwritten files; restore
-your config with `git restore -- .config/tmux .config/nvim`, or re-run the
+After any of these, `git status` in the repo shows the overwritten files;
+restore your config with
+`git restore -- .config/tmux .config/nvim .config/git`, or re-run the
 installer. Normal `omarchy update` only runs one-time migrations and does not
 touch these paths.
 
