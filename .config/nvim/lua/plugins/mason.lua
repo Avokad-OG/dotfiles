@@ -13,9 +13,7 @@ return {
         "json-lsp",
         "lemminx",
         "marksman",
-        -- sqls: the SQL LSP server (sqls-server/sqls). Mason builds it with
-        -- `go install`, so a Go toolchain must be present at install time.
-        "sqls",
+        "sqlls",
         -- lua-language-server is installed by LazyVim's lsp setup.
         -- Formatters (stylua and shfmt are already LazyVim defaults.)
         "csharpier",

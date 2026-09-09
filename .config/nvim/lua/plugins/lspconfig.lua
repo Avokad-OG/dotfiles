@@ -26,7 +26,7 @@ return {
       servers = {
         roslyn_ls = {},
         csharp_ls = false,
-        sqls = {},
+        sqlls = {},
       },
     },
   },
