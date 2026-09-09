@@ -36,7 +36,18 @@ return {
     hi_parameter = "LspSignatureActiveParameter",
 
     -- Cycle to the next overload (signature filtering).
-    select_signature_key = "<S-u>",
+    --
+    -- WARNING: do NOT use "<S-u>" here. In Vim/Neovim, <S-u> IS the
+    -- capital letter "U", and lsp_signature binds this as a buffer-local
+    -- insert-mode mapping on every buffer an LSP server attaches to. That
+    -- swallows every capital "U" you try to type (e.g. in .cs files with
+    -- roslyn attached), because the key is consumed by the mapping instead
+    -- of inserting the character. Left unset (nil) = cycling disabled.
+    select_signature_key = nil,
+    -- If you do want cycling, pick a key that can't be typed as text, e.g.
+    -- "<M-n>" (must be reachable as Alt in your terminal; on macOS the
+    -- Option key is often a dead key, so verify it reaches Neovim):
+    -- select_signature_key = "<M-n>",
   },
   config = function(_, opts)
     require("lsp_signature").setup(opts)
