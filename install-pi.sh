@@ -39,7 +39,6 @@ main() {
     build-essential curl git gh unzip lazygit git-delta fontconfig xz-utils luarocks \
     "liblua${LUA_VERSION}-dev" nodejs npm python3-venv tmux
   install_dotnet
-  install_roslyn_language_server
   install_luacheck
   install_nerd_font
   install_npm
@@ -58,7 +57,7 @@ main() {
   echo
   echo "Done. PATH exports for the .NET SDK, luacheck and nvim were added"
   echo "to ~/.bashrc. Open a new shell (or run: source ~/.bashrc) before using"
-  echo "dotnet, roslyn-language-server, luacheck or nvim from the terminal."
+  echo "dotnet, luacheck or nvim from the terminal."
   echo "First nvim launch bootstraps lazy.nvim and installs"
   echo "the Mason tools listed in nvim's mason.lua config."
 }

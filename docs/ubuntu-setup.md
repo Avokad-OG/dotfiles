@@ -32,9 +32,9 @@ exists (symlink to elsewhere or a real file) is reported and skipped.
 4. **python3-venv** — installed via apt (Mason's Python-based tools, e.g.
    xmlformatter, need `ensurepip` to create their virtualenvs; on Debian/Ubuntu
    that lives in the `python3-venv` package).
-5. **.NET 10 and Roslyn** — the SDK is installed from Microsoft to `~/.dotnet`
-   when missing, followed by the per-user global `roslyn-language-server` tool
-   in `~/.dotnet/tools`. These provide C# support and the SDK used by csharpier.
+5. **.NET 10** — the SDK is installed from Microsoft to `~/.dotnet` when
+   missing. It provides the runtime for Mason's Roslyn language server (step 6)
+   and the SDK used by csharpier.
 6. **Plugin hosts** — TPM is installed by the script, plus the **first nvim
    launch** bootstraps lazy.nvim, installs all Neovim plugins, and Mason
    installs the tools listed in `lua/plugins/mason.lua` (`ensure_installed`).
@@ -84,11 +84,11 @@ keyboard-only and not useful on a headless server.
 ## Tools on PATH (~/.bashrc)
 
 The installer appends PATH exports for the .NET SDK (`~/.dotnet` and
-`~/.dotnet/tools`, so `dotnet` and `roslyn-language-server` are reachable),
-luacheck (`~/.luarocks/bin`) and nvim (`/opt/nvim-linux-x86_64/bin`) to
-`~/.bashrc`. These apply to interactive shells only; scripts and non-interactive
-SSH sessions won't see them. If you need the tools in scripts, add the same
-exports to `~/.profile`:
+`~/.dotnet/tools`, so `dotnet` is reachable and global `dotnet tool` installs
+land on PATH), luacheck (`~/.luarocks/bin`) and nvim
+(`/opt/nvim-linux-x86_64/bin`) to `~/.bashrc`. These apply to interactive shells
+only; scripts and non-interactive SSH sessions won't see them. If you need the
+tools in scripts, add the same exports to `~/.profile`:
 
 ```bash
 export PATH="/opt/nvim-linux-x86_64/bin:$PATH"

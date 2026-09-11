@@ -22,8 +22,8 @@ fi
 echo "Found .NET SDK at $DOTNET_DIR/dotnet: $("$DOTNET_DIR/dotnet" --version)"
 
 # --- Lines to add to ~/.zshrc ---------------------------------------------------
-# Global .NET tools (e.g. roslyn-language-server) install to ~/.dotnet/tools,
-# so both the SDK dir and the tools dir go on PATH.
+# `dotnet tool install --global` writes to ~/.dotnet/tools, so both the SDK
+# dir and the tools dir go on PATH.
 readonly BLOCK=(
   '# .NET SDK (dotnet-install.sh) -- added by setup-dotnet.sh'
   "export DOTNET_ROOT=\"$DOTNET_DIR\""

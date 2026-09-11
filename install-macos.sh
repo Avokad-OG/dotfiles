@@ -171,7 +171,6 @@ main() {
 
   install_xcode
   install_dotnet
-  install_roslyn_language_server
   install_homebrew
   install_brewfile
   setup_p10k

@@ -18,9 +18,8 @@ You can also run the installer directly:
 - Updates and upgrades the Debian package index.
 - Installs the development tools, Node.js/npm, Neovim, tmux, git-delta (the
   `delta` pager), and font prerequisites.
-- Installs the .NET 10 SDK from Microsoft to `~/.dotnet` when it is missing,
-  then installs the per-user global `roslyn-language-server` tool to
-  `~/.dotnet/tools`.
+- Installs the .NET 10 SDK from Microsoft to `~/.dotnet` when it is missing
+  (Mason installs the Roslyn language server itself on first nvim use).
 - Links the shared dotfiles (including `~/.config/git/config`) and installs
   TPM.
 - Appends a `gh()` wrapper to `~/.bashrc` (routes gh git-credential writes to

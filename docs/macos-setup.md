@@ -16,9 +16,8 @@ You can also run the installer directly:
 
 - Requests installation of Xcode Command Line Tools when they are missing.
 - Installs the .NET 10 SDK from Microsoft to `~/.dotnet` when it is missing,
-  installs the per-user global `roslyn-language-server` tool to
-  `~/.dotnet/tools`, then adds `~/.dotnet` and `~/.dotnet/tools` to PATH in
-  `~/.zshrc`.
+  then adds `~/.dotnet` and `~/.dotnet/tools` to PATH in `~/.zshrc` (Mason
+  installs the Roslyn language server itself on first nvim use).
 - Installs Homebrew when it is missing; existing Homebrew installations are
   updated and upgraded.
 - Installs the packages and applications listed in `Brewfile` (including

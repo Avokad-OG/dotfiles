@@ -290,8 +290,8 @@ install_tmux() {
 }
 
 # Add the per-user PATH exports the Linux installers produce to ~/.bashrc:
-#   - the .NET SDK (installed with --no-path to $DOTNET_DIR) and its global
-#     tools directory (roslyn-language-server lives in ~/.dotnet/tools)
+#   - the .NET SDK (installed with --no-path to $DOTNET_DIR) and its
+#     per-user global tools directory ($HOME/.dotnet/tools)
 #   - luacheck, installed with `luarocks --local` to $LUA_ROCKS_BIN
 #   - the Neovim release tarball at $NEOVIM_INSTALL_ROOT/nvim-linux-$CPU_ARCHITECTURE/bin
 # Idempotent: each missing line is appended once; existing lines are preserved.
@@ -451,39 +451,6 @@ install_dotnet() {
   fi
 
   echo ".NET 10 SDK installed: $DOTNET_DIR"
-}
-
-roslyn_language_server_installed() {
-  [[ -x "$HOME/.dotnet/tools/roslyn-language-server" ]]
-}
-
-# Install Roslyn as a per-user global .NET tool. It is installed separately
-# from Mason because the Neovim configuration uses roslyn_ls directly.
-install_roslyn_language_server() {
-  local dotnet="$DOTNET_DIR/dotnet"
-
-  if roslyn_language_server_installed; then
-    echo "Roslyn language server already installed"
-    return 0
-  fi
-
-  if [[ ! -x "$dotnet" ]]; then
-    printf 'Error: .NET SDK is required to install Roslyn.\n' >&2
-    return 1
-  fi
-
-  echo "Roslyn language server not found; installing globally..."
-  if ! "$dotnet" tool install --global roslyn-language-server --prerelease; then
-    printf 'Error: Roslyn language server installation failed.\n' >&2
-    return 1
-  fi
-
-  if ! roslyn_language_server_installed; then
-    printf 'Error: Roslyn installation completed, but the executable was not found.\n' >&2
-    return 1
-  fi
-
-  echo "Roslyn language server installed: $HOME/.dotnet/tools/roslyn-language-server"
 }
 
 # Install the Tmux Plugin Manager without overwriting an existing path.
