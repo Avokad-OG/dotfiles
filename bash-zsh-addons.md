@@ -12,3 +12,15 @@ if command -v eza &> /dev/null; then
 fi
 
 ```
+
+## Git aliases
+
+```bash
+# Git aliases
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit -m'
+alias gp='git push'
+alias gl='git log --oneline --graph --decorate'
+alias gg='lazygit'
+```
