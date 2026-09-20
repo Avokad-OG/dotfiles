@@ -55,8 +55,17 @@
 
 # Per-machine, identifying values (user.name, user.email, credential helpers
 # with absolute paths) must not be committed. They live in
-# ~/.config/git/config.local, next to this file, and are created by hand on
+# ~/.config/git/*.gitconfig, next to this file, and are created by hand on
 # each machine; that file is intentionally NOT tracked. The include below
 # pulls it in (git resolves the relative path against this file's directory).
-[include]
-	path = config.local
+[includeIf "gitdir:~/private/"]
+	path = ~/.config/git/private.gitconfig
+[includeIf "gitdir:~/dotfiles/"]
+  path = ~/.config/git/public.gitconfig
+
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
