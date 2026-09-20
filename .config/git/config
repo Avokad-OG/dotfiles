@@ -60,6 +60,8 @@
 # pulls it in (git resolves the relative path against this file's directory).
 [includeIf "gitdir:~/private/"]
 	path = ~/.config/git/private.gitconfig
+[includeIf "gitdir:~/public/"]
+  path = ~/.config/git/public.gitconfig
 [includeIf "gitdir:~/dotfiles/"]
   path = ~/.config/git/public.gitconfig
 
